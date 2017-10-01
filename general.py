@@ -4,6 +4,7 @@ import numpy as np
 # TODO: fill these variables according to your data files.
 personality_participant_col_name = "id"
 data_participant_col_name = "Participant"
+overview_participant_col_name = "Participant"       #participant column name in the overview file
 personality_data_filename = '../raw_data/partcipants_info1.txt'
 personality_file_separator = "\t"
 participants_overview_filename = '../raw_data/Specialized Statistics - Participant Overview.txt'
@@ -33,7 +34,7 @@ def get_valid_tracking_participants_list():
     participants_data = pd.read_csv(participants_overview_filename, sep=participants_overview_separator,
                                     encoding='latin1', error_bad_lines=False)
     participants_data = participants_data[participants_data['Tracking Ratio [%]'] > 84]
-    valid_participants_tracking = set(participants_data[data_participant_col_name])
+    valid_participants_tracking = set(participants_data[overview_participant_col_name])
     return valid_participants_tracking
 
 
@@ -87,7 +88,7 @@ def get_upper_lower_percentile_list(big_5_trait, percentile):
     personality_data = personality_data[personality_data[personality_participant_col_name].isin(participants_to_include)]
 
     lower_third_threshold = personality_data[big_5_trait].quantile(percentile)
-    # TODO: if you want to know what is the threshold
+    # TODO: if you want to know what is the threshold, uncomment these lines
     # print "low {} threshold is {}".format(big_5_trait, lower_third_threshold)
     higher_third_threshold = personality_data[big_5_trait].quantile(1 - percentile)
     # print "high {} threshold is {}".format(big_5_trait, higher_third_threshold)

@@ -60,7 +60,7 @@ def compute_trial_pattern(aoi_single):
             "3rd Region": "{}, {}, {}".format(pattern1, pattern2, pattern3)
             # "3rd Region": pattern3
             }, ignore_index=True)
-    # aoi_patterns.to_csv('outputs/patterns.csv')
+    # aoi_patterns.to_csv('outputs/patterns_single.csv')
     return aoi_patterns
 
 def count_participant_patterns(aoi_patterns, pattern_len_col):
@@ -81,8 +81,11 @@ def count_participant_patterns(aoi_patterns, pattern_len_col):
         new_count.loc[new_count_index, 'Participant'] = row['Participant']
         new_count.loc[new_count_index, row[pattern_len_col]] = row['count']
     new_count.fillna(value=0, inplace=True)
-    new_count['Stability'] = ""
-    new_count['Stability'] = new_count.apply(lambda row: row[regions].std(), axis=1)
+    new_count['Most common consistency'] = ""
+    new_count['Most common consistency'] = new_count.apply(lambda row: float(max(row[regions]))/sum(row[regions]), axis=1)
+    new_count['General consistency'] = ""
+    new_count['General consistency'] = new_count.apply(lambda row: row[regions].std(), axis=1)
+    # new_count.to_csv('outputs/patterns_count.csv')
     return new_count
 
 
@@ -120,7 +123,7 @@ def group_summary_by_AOIs(aoi_summary):
 
 
 def group_summary_by_AOIs2(aoi_summary):
-    """This function takes some of the data from aoi_summary grouped by AOIs and rearrange it """
+    """This function takes some of the data from aoi_summary grouped by AOIs and rearrange it in columns"""
     aois = list(aoi_summary['AOI Name'].unique())
     df = aoi_summary[['Participant']].groupby('Participant').agg('count').reset_index()
     #TODO: you choose here other columns from aoi_summary
@@ -135,7 +138,7 @@ def group_summary_by_AOIs2(aoi_summary):
         df = df.merge(temp, on='Participant')
     # df.to_csv("outputs/bb.csv")
     # count_participant_patterns(aoi_single)
-    print df
+    # print df
     return df
 
 if __name__ == '__main__':
@@ -146,22 +149,20 @@ if __name__ == '__main__':
     # 2. summarize general orders of AOIs
     # general_order_of_regions(aoi_single)
     # 3. get patterns count:
-    patterns = compute_trial_pattern(aoi_single)
-    patterns_count_len2 = count_participant_patterns(patterns, '2nd Region')
+    patterns = compute_trial_pattern(aoi_single)        # find pattern of each trial
     patterns_count_len1 = count_participant_patterns(patterns, '1st Region')
+    # patterns_count_len2 = count_participant_patterns(patterns, '2nd Region')
+    personality = general.read_personality_data()
     # 4. if you want all patterns_count grouped together:
     # big = build_big_patterns_counts(aoi_single)
     # 5. get more data about participants across AOIs:
-    # data = group_summary_by_AOIs2(aoi_summary)
-    # data = data.merge(patterns_count_len1, on='Participant')
-
+    data_for_ttest = group_summary_by_AOIs2(aoi_summary)
     # 6. run statistical tests on data collected:
-    personality = general.read_personality_data()
-    stat_analysis.classify_by_trait(patterns_count_len1, 'E', 400)
-    # stat_analysis.run_t_tests(patterns_count_len2, personality)
-    # stat_analysis.find_correlations(data, personality)
+    data_for_classifier = patterns_count_len1[['Participant', 'eyes+eyebrows', 'mouth+chin', 'nose+cheeks']]
+    # stat_analysis.classify_by_trait(data_for_classifier, 'E', 400)
+    stat_analysis.run_t_tests(data_for_ttest, personality)
+    stat_analysis.find_correlations(data_for_ttest, personality)
 
 
 
 
-    # data = analyze_aois(aoi_single, aoi_summary)
