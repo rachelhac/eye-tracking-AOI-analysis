@@ -9,6 +9,8 @@ personality_data_filename = '../raw_data/partcipants_info1.txt'
 personality_file_separator = "\t"
 participants_overview_filename = '../raw_data/Specialized Statistics - Participant Overview.txt'
 participants_overview_separator = "\t"
+# TODO: insert here the relative path of the directory you want the output files to be stored at.
+output_directory = 'outputs'
 
 
 def read_personality_data():
@@ -72,13 +74,19 @@ def load_and_clean_data(filename):
     return data
 
 
-def get_upper_lower_percentile(data_frame, big_5_trait, percentile):
+def get_upper_lower_percentile(data_frame, big_5_trait, percentile, lower_output_filename="", upper_output_filename="",):
     """This function splits the dataframe into 2 smaller dataframes and returns them. The first one is a dataFrame
      that contains the data of the participants who got the percentile lowest level of the personality
      trait (E/A/C/N/I) and the second of participants who got the highest level of that trait."""
     lower_participants, higher_participants = get_upper_lower_percentile_list(big_5_trait, percentile)
     higher_data = data_frame[data_frame[data_participant_col_name].isin(higher_participants)]
     lower_data = data_frame[data_frame[data_participant_col_name].isin(lower_participants)]
+    if lower_output_filename:
+        print "file created {}/{}".format(output_directory, lower_output_filename)
+        lower_data.to_csv(output_directory + "/" + lower_output_filename)
+    if upper_output_filename:
+        print "file created {}/{}".format(output_directory, upper_output_filename)
+        higher_data.to_csv(output_directory + "/" + upper_output_filename)
     return lower_data, higher_data
 
 
@@ -104,7 +112,7 @@ def get_upper_lower_percentile_list(big_5_trait, percentile):
     return lower_participants, higher_participants
 
 
-def split_df_to_two(df, split_fraction=0.5):
+def split_df_to_two(df, split_fraction=0.5, df1_output_filename="", df2_output_filename=""):
     """" This function randomly splits the dataFrame df into 2 parts with sizes according to split_fraction.
     It splits the data according to participants so that one participant's data isn't split.
     By default, split_fraction=0.5, which divides df into 2 equal parts."""
@@ -114,10 +122,22 @@ def split_df_to_two(df, split_fraction=0.5):
     partition2 = [x for x in participants if x not in partition1]
     df1 = new_df[new_df[data_participant_col_name].isin(partition1)]
     df2 = new_df[new_df[data_participant_col_name].isin(partition2)]
+    if df1_output_filename:
+        print "file created {}/{}".format(output_directory, df1_output_filename)
+        df1.to_csv(output_directory + "/" + df1_output_filename)
+    if df2_output_filename:
+        print "file created {}/{}".format(output_directory, df2_output_filename)
+        df2.to_csv(output_directory + "/" + df2_output_filename)
     return df1, df2
 
-def split_df_by_beginning_end_of_movie(df):
+def split_df_by_beginning_end_of_movie(df, begin_output_filename="", end_output_filename=""):
     """returns """
     beginning = df[df['Stimulus'].str.match(".*_q1.*")]
     end = df[df['Stimulus'].str.match(".*_q2.*")]
+    if begin_output_filename:
+        print "file created {}/{}".format(output_directory, begin_output_filename)
+        beginning.to_csv(output_directory + "/" + begin_output_filename)
+    if end_output_filename:
+        print "file created {}/{}".format(output_directory, end_output_filename)
+        end.to_csv(output_directory + "/" + end_output_filename)
     return beginning, end

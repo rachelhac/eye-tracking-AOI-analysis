@@ -197,7 +197,7 @@ if __name__ == '__main__':
     pat_len = get_patterns_length_count(patterns)
     stat_analysis.find_correlations(pat_len, personality_data, "len-personality correlations.csv")
     stat_analysis.run_t_tests(pat_len, personality_data, "len-personality t-tests.csv")
-    begin, end = general.split_df_by_beginning_end_of_movie(patterns)
+    begin, end = general.split_df_by_beginning_end_of_movie(patterns, "patterns_q1.csv", "patterns_q2.csv")
     patterns_count_len2 = count_participant_patterns(patterns, '2nd Region', output_filename="patterns_count_len2.csv")
     patterns_count_len2_q1 = count_participant_patterns(begin, '2nd Region', output_filename="patterns_count_len2_q1.csv")
     patterns_count_len2_q2 = count_participant_patterns(end, '2nd Region', output_filename="patterns_count_len2_q2.csv")
