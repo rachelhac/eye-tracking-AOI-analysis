@@ -7,9 +7,11 @@ from sklearn import svm
 # TODO: fill these variables according to your data files.
 personality_participant_col_name = "id"     #name of participant column in personality_info file
 data_participant_col_name = "Participant"   #name of participant column in data file
+# TODO: insert here the relative path of the directory you want the output files to be stored at.
+output_directory = 'outputs'
 
 
-def find_correlations(data, personality_data):
+def find_correlations(data, personality_data, output_filename):
     """This function creates a file containing a correlation matrix between defined interesting parameters"""
     combined = personality_data.merge(data, how='inner', left_on=personality_participant_col_name,
                                       right_on=data_participant_col_name)
@@ -17,13 +19,11 @@ def find_correlations(data, personality_data):
     res = combined.corr()
     # cut from matrix only interesting parts:
     res = res.loc[list(data), list(personality_data)]
-    # TODO: define path and desired name for output file
-    output_filename = "outputs/correlations matrix.csv"
     print "The correlation matrix is saved in file {}...".format(output_filename)
-    res.to_csv(output_filename, encoding='latin1')
+    res.to_csv(output_directory + "/" + output_filename, encoding='latin1')
 
 
-def run_t_tests(data, personality_data):
+def run_t_tests(data, personality_data, output_filename):
     """This function runs """
     # the results dataFrame will store data of all significant t-tests
     results = pd.DataFrame(columns=["eye movement trait", "personality trait", "p-value", "t-value",
@@ -52,10 +52,8 @@ def run_t_tests(data, personality_data):
                 results.loc[results_index] = new_res
                 results_index += 1
 
-    # TODO: define path and desired name for output file
-    output_filename = "outputs/t-tests_results.csv"
     print "Significant t-tests are saved in file {}...".format(output_filename)
-    results.to_csv(output_filename, encoding='latin1')
+    results.to_csv(output_directory + "/" + output_filename, encoding='latin1')
 
 
 def classify_by_trait(data, trait, num_iterations):

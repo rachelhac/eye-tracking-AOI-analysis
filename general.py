@@ -33,6 +33,8 @@ def get_valid_tracking_participants_list():
     # remove low tracking ratio
     participants_data = pd.read_csv(participants_overview_filename, sep=participants_overview_separator,
                                     encoding='latin1', error_bad_lines=False)
+    types_dict = {data_participant_col_name: 'str'}
+    participants_data = participants_data.astype(types_dict, errors='ignore')
     participants_data = participants_data[participants_data['Tracking Ratio [%]'] > 84]
     valid_participants_tracking = set(participants_data[overview_participant_col_name])
     return valid_participants_tracking
@@ -55,7 +57,7 @@ def load_and_clean_data(filename):
         data = data[data['Eye L/R'] == 'Right']
     # remove data of excluded participants:
     participants_to_include = get_valid_participants_list()
-    print "Found in data {} valid participants".format(len(participants_to_include))
+    print "Found {} valid participants in file {}".format(len(participants_to_include), filename)
     data = data[data[data_participant_col_name].isin(participants_to_include)]
     # remove all non informative trials
     data = data[data['Stimulus'] != 'fix_mid_down.png']
@@ -63,7 +65,7 @@ def load_and_clean_data(filename):
     data = data[data['Stimulus'] != 'answer_the_question.png']
     data = data[data['Stimulus'] != 'intro_interview_part.png']
     # in AOI files - fix some typos in aoi names
-    #TODO: if you hav other typos in your file, you can fix them like that
+    # TODO: if you have other typos in your file, you can fix them like that
     if 'AOI Name' in list(data.columns.values):
         data['AOI Name'] = data['AOI Name'].apply(lambda x: 'eyes+eyebrows' if x == 'eyes+etebrows' else x)
         data = data[data['AOI Name'] != 'AOI 001']
@@ -113,3 +115,9 @@ def split_df_to_two(df, split_fraction=0.5):
     df1 = new_df[new_df[data_participant_col_name].isin(partition1)]
     df2 = new_df[new_df[data_participant_col_name].isin(partition2)]
     return df1, df2
+
+def split_df_by_beginning_end_of_movie(df):
+    """returns """
+    beginning = df[df['Stimulus'].str.match(".*_q1.*")]
+    end = df[df['Stimulus'].str.match(".*_q2.*")]
+    return beginning, end
