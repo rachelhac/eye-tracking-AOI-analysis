@@ -13,6 +13,10 @@ output_directory = 'outputs'
 
 def find_correlations(data, personality_data, output_filename):
     """This function creates a file containing a correlation matrix between defined interesting parameters"""
+    types_dict = {personality_participant_col_name: 'str'}
+    personality_data = personality_data.astype(types_dict, errors='ignore')
+    types_dict = {data_participant_col_name: 'str'}
+    data = data.astype(types_dict, errors='ignore')
     combined = personality_data.merge(data, how='inner', left_on=personality_participant_col_name,
                                       right_on=data_participant_col_name)
     # Compute the correlation between every two numerical columns in the dataFrame and return a matrix
@@ -26,6 +30,10 @@ def find_correlations(data, personality_data, output_filename):
 def run_t_tests(data, personality_data, output_filename):
     """This function runs """
     # the results dataFrame will store data of all significant t-tests
+    types_dict = {personality_participant_col_name: 'str'}
+    personality_data = personality_data.astype(types_dict, errors='ignore')
+    types_dict = {data_participant_col_name: 'str'}
+    data = data.astype(types_dict, errors='ignore')
     results = pd.DataFrame(columns=["eye movement trait", "personality trait", "p-value", "t-value",
                                     "low mean", "high mean", "low std", "high std"])
     results_index = 0
@@ -141,7 +149,7 @@ def assess_classifier_accuracy(classifier, labeled_test_set):
 
 if __name__ == '__main__':
     # load data for correlation test:
-    trial_data = general.load_and_clean_data('../raw_data/Event Statistics - Trial Summary.txt')
+    trial_data = general.load_and_clean_data('raw_data/Event Statistics - Trial Summary.txt')
     personality_data = general.read_personality_data()
     # Grouping the data by participant:
     data_for_ttest = trial_data.groupby(data_participant_col_name).mean().reset_index()

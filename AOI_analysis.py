@@ -182,8 +182,8 @@ def group_summary_by_AOIs(aoi_summary, output_filename=""):
 
 
 if __name__ == '__main__':
-    aoi_summary = general.load_and_clean_data('../raw_data/AOI Statistics - Trial Summary (AOI).txt')
-    aoi_single = general.load_and_clean_data('../raw_data/AOI Statistics - Single.txt')
+    aoi_summary = general.load_and_clean_data('raw_data/AOI Statistics - Trial Summary (AOI).txt')
+    aoi_single = general.load_and_clean_data('raw_data/AOI Statistics - Single.txt')
     personality_data = general.read_personality_data()
     # 1. sum of all fixations on all AOIs:
     # general_analysis(aoi_summary)

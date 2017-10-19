@@ -5,9 +5,9 @@ import numpy as np
 personality_participant_col_name = "id"
 data_participant_col_name = "Participant"
 overview_participant_col_name = "Participant"       #participant column name in the overview file
-personality_data_filename = '../raw_data/partcipants_info1.txt'
+personality_data_filename = 'raw_data/partcipants_info1.txt'
 personality_file_separator = "\t"
-participants_overview_filename = '../raw_data/Specialized Statistics - Participant Overview.txt'
+participants_overview_filename = 'raw_data/Specialized Statistics - Participant Overview.txt'
 participants_overview_separator = "\t"
 # TODO: insert here the relative path of the directory you want the output files to be stored at.
 output_directory = 'outputs'
